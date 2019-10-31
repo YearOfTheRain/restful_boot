@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.restful.system.mapper.SysUserRoleMapper">
+
+    <!--批量新增 用户角色关联信息 create by LiShuLin 2019.09.26-->
+    <insert id="batchUserRole">
+        INSERT INTO sys_user_role(user_id, role_id) VALUES
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{item.userId}, #{item.roleId})
+            </foreach>
+    </insert>
+
+    <!--根据用户 id 删除用户角色关联信息 create by LiShuLin 2019.09.26-->
+    <delete id="deleteUserRole">
+        DELETE FROM sys_user_role WHERE user_id = #{userId}
+    </delete>
+
+</mapper>
