@@ -35,15 +35,15 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /*** 读取接收邮件人*/
     @Value("${mail.to}")
-    private String emailTo;
+    public String emailTo;
 
     /*** 读取附件地址*/
     @Value("${mail.filePath}")
-    private String filePath;
+    public String filePath;
 
     /**
      * 方法描述: 处理参数不合法
