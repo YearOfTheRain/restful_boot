@@ -73,45 +73,15 @@ public class MailUtils {
     public static boolean buildMessage(Mail mail) {
         // 创建默认的 MimeMessage 对象
         MimeMessage message = new MimeMessage(getSession());
-
         try {
             // Set From: 头部头字段
             message.setFrom(new InternetAddress(FROM));
-
             // Set To: 头部头字段
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(mail.getTo()));
-
             // Set Subject: 主题文字
             message.setSubject(mail.getSubject());
-
-            // 创建消息部分
-            BodyPart messageBodyPart = new MimeBodyPart();
-
-            // 消息
-            messageBodyPart.setText(mail.getText());
-
-            // 创建多重消息
-            Multipart multipart = new MimeMultipart();
-
-            // 设置文本消息部分
-            multipart.addBodyPart(messageBodyPart);
-
-            if (!StringUtils.isEmpty(mail.getFileName())) {
-                // 附件部分
-                BodyPart fileBodyPart = new MimeBodyPart();
-                //设置要发送附件的文件路径
-                DataSource source = new FileDataSource(mail.getFileName());
-                fileBodyPart.setDataHandler(new DataHandler(source));
-
-                //处理附件名称中文（附带文件路径）乱码问题
-                fileBodyPart.setFileName(MimeUtility.encodeText(mail.getFileName()));
-                multipart.addBodyPart(fileBodyPart);
-            }
-
-            // 发送完整消息
-            message.setContent(multipart);
-
-            //   发送消息
+            // Set Content: 消息内容
+            message.setContent(createTextAndFileMessages(mail));
             Transport.send(message);
         } catch (MessagingException e) {
             log.info("build MimeMessage fail and the reason is : ", e);
@@ -124,5 +94,48 @@ public class MailUtils {
         }
         log.info("Sent message successfully...");
         return true;
+    }
+
+    /**
+     *  创建多个消息内容(包括文字消息和附件信息)
+     * @param mail mail 信息
+     * @throws MessagingException MessagingException
+     * @throws UnsupportedEncodingException UnsupportedEncodingException
+     */
+    private static Multipart createTextAndFileMessages(Mail mail) throws MessagingException, UnsupportedEncodingException {
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(setText(mail.getText()));
+        if (!StringUtils.isEmpty(mail.getFileName())) {
+            multipart.addBodyPart(setFile(mail.getFileName()));
+        }
+        return multipart;
+    }
+
+    /**
+     *  设置文本值
+     * @param text 文本
+     * @throws MessagingException MessagingException
+     */
+    private static BodyPart setText(String text) throws MessagingException {
+        BodyPart textBodyPart = new MimeBodyPart();
+        textBodyPart.setText(text);
+        return textBodyPart;
+    }
+
+    /**
+     *  设置附件
+     * @param fileName 文件名
+     * @throws MessagingException MessagingException
+     * @throws UnsupportedEncodingException UnsupportedEncodingException
+     */
+    private static BodyPart setFile(String fileName) throws MessagingException, UnsupportedEncodingException {
+        // 附件部分
+        BodyPart fileBodyPart = new MimeBodyPart();
+        //设置要发送附件的文件路径
+        DataSource source = new FileDataSource(fileName);
+        fileBodyPart.setDataHandler(new DataHandler(source));
+        //处理附件名称中文（附带文件路径）乱码问题
+        fileBodyPart.setFileName(MimeUtility.encodeText(fileName));
+        return fileBodyPart;
     }
 }
