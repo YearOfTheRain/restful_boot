@@ -39,11 +39,11 @@ public class GlobalExceptionHandler {
 
     /*** 读取接收邮件人*/
     @Value("${mail.to}")
-    public String emailTo;
+    private String emailTo;
 
     /*** 读取附件地址*/
     @Value("${mail.filePath}")
-    public String filePath;
+    private String filePath;
 
     /**
      * 方法描述: 处理参数不合法
