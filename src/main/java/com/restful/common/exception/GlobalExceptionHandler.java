@@ -35,7 +35,7 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /*** 读取接收邮件人*/
     @Value("${mail.to}")
