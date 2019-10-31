@@ -93,7 +93,7 @@ public class MailTest {
     public static void main(String[] args) {
         Mail mail = new Mail();
         mail.setForm(MailUtils.FROM);
-        mail.setTo("424040724@qq.com");
+        mail.setTo("zxcxzc@qq.com");
 //        mail.setTo(MailUtils.TO);
         mail.setSubject("");
         mail.setText("测试导出excel到邮箱，不用理会，请忽略。附件也请忽略");

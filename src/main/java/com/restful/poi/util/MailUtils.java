@@ -3,6 +3,7 @@ package com.restful.poi.util;
 import com.restful.poi.model.Mail;
 import com.sun.mail.util.MailSSLSocketFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -24,9 +25,9 @@ import java.util.Properties;
 public class MailUtils {
 
     /*** 收件人电子邮箱*/
-    public static final String TO = "997150421@qq.com";
+    public static final String TO = "asdsadas@qq.com";
     /*** 发件人电子邮箱*/
-    public static final String FROM = "yearoftherain@qq.com";
+    public static final String FROM = "ysadsadsa@qq.com";
     /*** 指定发送邮件的主机为 smtp.qq.com QQ 邮件服务器*/
     private static final String HOST = "smtp.qq.com";
     /*** 获取配置*/
@@ -51,23 +52,31 @@ public class MailUtils {
         }
     }
 
-    public static Session getSession() {
+    private static Session getSession() {
         return Session.getDefaultInstance(properties,new Authenticator(){
             @Override
             public PasswordAuthentication getPasswordAuthentication()
             {     //qq邮箱服务器账户、第三方登录授权码
-                return new PasswordAuthentication("yearoftherain@qq.com", "jblwaulofalgdicg"); //发件人邮件用户名、密码
+                return new PasswordAuthentication(FROM, "12312312"); //发件人邮件用户名、密码
             }
         });
     }
 
+    /**
+     * 方法描述:  发送邮件
+     *
+     * @param mail 邮件信息
+     * @return boolean
+     * @author LiShuLin
+     * @date 2019/10/31
+     */
     public static boolean buildMessage(Mail mail) {
         // 创建默认的 MimeMessage 对象
         MimeMessage message = new MimeMessage(getSession());
 
         try {
             // Set From: 头部头字段
-            message.setFrom(new InternetAddress(mail.getForm()));
+            message.setFrom(new InternetAddress(FROM));
 
             // Set To: 头部头字段
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(mail.getTo()));
@@ -87,15 +96,17 @@ public class MailUtils {
             // 设置文本消息部分
             multipart.addBodyPart(messageBodyPart);
 
-            // 附件部分
-            messageBodyPart = new MimeBodyPart();
-            //设置要发送附件的文件路径
-            DataSource source = new FileDataSource(mail.getFileName());
-            messageBodyPart.setDataHandler(new DataHandler(source));
+            if (!StringUtils.isEmpty(mail.getFileName())) {
+                // 附件部分
+                BodyPart fileBodyPart = new MimeBodyPart();
+                //设置要发送附件的文件路径
+                DataSource source = new FileDataSource(mail.getFileName());
+                fileBodyPart.setDataHandler(new DataHandler(source));
 
-            //处理附件名称中文（附带文件路径）乱码问题
-            messageBodyPart.setFileName(MimeUtility.encodeText(mail.getFileName()));
-            multipart.addBodyPart(messageBodyPart);
+                //处理附件名称中文（附带文件路径）乱码问题
+                fileBodyPart.setFileName(MimeUtility.encodeText(mail.getFileName()));
+                multipart.addBodyPart(fileBodyPart);
+            }
 
             // 发送完整消息
             message.setContent(multipart);
@@ -103,15 +114,15 @@ public class MailUtils {
             //   发送消息
             Transport.send(message);
         } catch (MessagingException e) {
-            log.info("build MimeMessage fail and the reason is :" + e.getMessage());
+            log.info("build MimeMessage fail and the reason is : ", e);
             e.printStackTrace();
             return false;
         } catch (UnsupportedEncodingException e) {
-            log.info("fileName url encode error and the reason is :" + e.getMessage());
+            log.info("fileName url encode error and the reason is :", e);
             e.printStackTrace();
             return false;
         }
-        System.out.println("Sent message successfully....");
+        log.info("Sent message successfully...");
         return true;
     }
 }

@@ -56,7 +56,12 @@ public class AsyncManager {
      */
     public void execute(TimerTask timerTask) {
         //延迟 10 毫秒执行该任务
-        executor.schedule(timerTask, OPERATE_DELAY_TIME, TimeUnit.MILLISECONDS);
+        try {
+            executor.schedule(timerTask, OPERATE_DELAY_TIME, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            executor.shutdown();
+        }
     }
 
     public void setFixedThreadPool(TimerTask timerTask) {

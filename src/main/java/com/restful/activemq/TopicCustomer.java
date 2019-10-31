@@ -1,6 +1,5 @@
 package com.restful.activemq;
 
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TopicCustomer {
+/*
 
     @JmsListener(destination = "first")
     public void subMessage(String message) {
@@ -27,6 +27,7 @@ public class TopicCustomer {
     public void subMessage3(String message) {
         System.out.println("消费者 3 ：" + message);
     }
+*/
 
     /*@JmsListener(destination = "queue")
     public void subMessage4(String message) {

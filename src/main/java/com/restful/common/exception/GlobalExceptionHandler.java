@@ -6,8 +6,11 @@ import com.restful.common.enums.resultenum.ResultCode;
 import com.restful.common.exception.data.DataConflictException;
 import com.restful.common.exception.data.DataNotFoundException;
 import com.restful.common.util.RequestContextHolderUtil;
+import com.restful.poi.model.Mail;
+import com.restful.poi.util.MailUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -33,6 +36,14 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    /*** 读取接收邮件人*/
+    @Value("${mail.to}")
+    private String emailTo;
+
+    /*** 读取附件地址*/
+    @Value("${mail.filePath}")
+    private String filePath;
 
     /**
      * 方法描述: 处理参数不合法
@@ -150,6 +161,15 @@ public class GlobalExceptionHandler {
         logger.info("handleMethodRuntimeException start, uri:{}, caused by: ",
                 RequestContextHolderUtil.getHttpServletRequest().getRequestURI(), e);
         //todo 给管理员发短信、微信或者 QQ 消息提示
+        String[] strings = emailTo.split(",");
+        for (String s : strings) {
+            Mail mail = new Mail();
+            mail.setTo(s);
+            mail.setSubject(e.getMessage());
+            mail.setText("详情请看附件日志记录");
+            mail.setFileName(filePath);
+            MailUtils.buildMessage(mail);
+        }
         return ResponseEntity.failure(ResultCode.SERVER_ERROR);
     }
 

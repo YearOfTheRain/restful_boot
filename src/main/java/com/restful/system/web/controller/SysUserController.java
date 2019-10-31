@@ -34,7 +34,10 @@ public class SysUserController {
     @GetMapping
     public ResponseEntity getAll() {
         List<SysUser> list = sysUserService.list();
-        return ResponseEntity.success(list);
+        throw new RuntimeException("测试发送邮件.抛出空指针异常");
+//        return ResponseEntity.success(list);
+
+
     }
 
     /**

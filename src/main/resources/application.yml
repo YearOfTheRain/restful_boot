@@ -69,5 +69,10 @@ logging:
         user: error
         common: info
 
+# 管理员接收异常消息的邮箱，多个用逗号(,) 隔开
+mail:
+  to: XXXXXXXX@qq.com
+  filePath: D:\ideaWorkSpeace\restful_boot\log\logFile.log
+
 
 
