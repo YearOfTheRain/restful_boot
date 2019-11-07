@@ -14,16 +14,6 @@ import java.util.concurrent.ExecutorService;
  */
 public class AsyncManager {
 
-    /**
-     * 操作延迟10毫秒
-     */
-    private static final int OPERATE_DELAY_TIME = 10;
-
-    /**
-     * 异步操作任务调度线程池
-     */
-//    private ScheduledExecutorService executor = SpringUtils.getBean("scheduledExecutorService");
-
     private ExecutorService fixedThreadPool = SpringUtils.getBean("fixedThreadPool");
 
     private AsyncManager() {
@@ -43,19 +33,6 @@ public class AsyncManager {
     public static AsyncManager getInstance() {
         return AsyncStaticManager.asyncManager;
     }
-
-    /**
-     * 方法描述: 开始执行任务
-     *
-     * @param timerTask 待执行的定时任务
-     * @return void
-     * @author LiShuLin
-     * @date 2019/10/10
-     */
-//    public void execute(TimerTask timerTask) {
-//        //延迟 10 毫秒执行该任务
-//        executor.schedule(timerTask, OPERATE_DELAY_TIME, TimeUnit.MILLISECONDS);
-//    }
 
     public void setFixedThreadPool(TimerTask timerTask) {
         fixedThreadPool.execute(timerTask);

@@ -24,8 +24,8 @@ public class ExcelReaderUtil {
     public static void readExcel(String filePath, ExcelReadDataDelegated excelReadDataDelegated) throws Exception {
 
         if (filePath.endsWith(ExcelConstant.EXCEL07_EXTENSION)) {
-            ExcelReader excelXlsxReader = new ExcelReader(excelReadDataDelegated);
-            excelXlsxReader.process(filePath);
+            ExcelReader reader = new ExcelReader(excelReadDataDelegated);
+            reader.process(filePath);
         } else {
             throw new Exception("文件格式错误，fileName的扩展名只能是xlsx!");
         }
@@ -33,8 +33,8 @@ public class ExcelReaderUtil {
 
     public static void readExcel(InputStream inputStream, ExcelReadDataDelegated excelReadDataDelegated) throws Exception {
         try {
-            ExcelReader excelXlsxReader = new ExcelReader(excelReadDataDelegated);
-            excelXlsxReader.process(inputStream);
+            ExcelReader reader = new ExcelReader(excelReadDataDelegated);
+            reader.process(inputStream);
         } catch (Exception e) {
             throw new Exception("文件格式错误，fileName的扩展名只能是xlsx!");
         }
