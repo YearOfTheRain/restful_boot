@@ -23,6 +23,7 @@ public class ThreadPoolConfig {
     private final ThreadBean threadBean;
 
 
+
     public ThreadPoolConfig(ThreadBean threadBean) {
         this.threadBean = threadBean;
     }

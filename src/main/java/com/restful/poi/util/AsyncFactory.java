@@ -24,6 +24,7 @@ import java.util.TimerTask;
 @Slf4j
 public class AsyncFactory {
 
+
     /** 
      * 方法描述: 异步解析 excel 完成后记录 
      *
