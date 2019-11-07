@@ -14,8 +14,10 @@ import java.util.concurrent.ExecutorService;
  */
 public class AsyncManager {
 
+    /**
+     * 异步操作任务调度线程池
+     */
     private ExecutorService fixedThreadPool = SpringUtils.getBean("fixedThreadPool");
-
 
     private AsyncManager() {
     }
@@ -35,6 +37,15 @@ public class AsyncManager {
         return AsyncStaticManager.asyncManager;
     }
 
+
+    /**
+     * 方法描述: 开始执行任务
+     *
+     * @param timerTask 待执行的定时任务
+     * @return void
+     * @author LiShuLin
+     * @date 2019/10/10
+     */
     public void setFixedThreadPool(TimerTask timerTask) {
         fixedThreadPool.execute(timerTask);
     }

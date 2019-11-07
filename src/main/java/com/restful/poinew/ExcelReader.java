@@ -126,7 +126,7 @@ public class ExcelReader extends DefaultHandler {
 
     private Set<Excel> excelSet = new HashSet<>(1024);
 
-    private int processCore(OPCPackage pkg) throws Exception  {
+    private int processCore(OPCPackage pkg) throws Exception {
         XSSFReader xssfReader = new XSSFReader(pkg);
         stylesTable = xssfReader.getStylesTable();
         SharedStringsTable sst = xssfReader.getSharedStringsTable();
@@ -159,6 +159,7 @@ public class ExcelReader extends DefaultHandler {
     int process(String filename) throws Exception {
         return processCore(OPCPackage.open(filename));
     }
+
     /**
      * 遍历工作簿中所有的电子表格
      * 并缓存在mySheetList中
@@ -183,7 +184,7 @@ public class ExcelReader extends DefaultHandler {
     public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
 
         // 获取总行号  格式： A1:B5    取最后一个值即可(从 : 后第三位开始截取)
-        if("dimension".equals(name)) {
+        if ("dimension".equals(name)) {
             String dimensionStr = attributes.getValue("ref");
             totalRowCount = Integer.parseInt(dimensionStr.substring(dimensionStr.indexOf(":") + 3)) - 1;
         }
@@ -304,7 +305,7 @@ public class ExcelReader extends DefaultHandler {
                 ref = null;
                 excel = null;
                 flag = false;
-                if(totalRows == totalRowCount && !(excelSet.isEmpty())) {
+                if (totalRows == totalRowCount && !(excelSet.isEmpty())) {
                     AsyncManager.getInstance().setFixedThreadPool(AsyncFactory.saveData(excelSet));
                     excelSet.clear();
                 }
@@ -365,9 +366,9 @@ public class ExcelReader extends DefaultHandler {
     /**
      * 对解析出来的数据进行类型处理
      *
-     * @param value   单元格的值，
-     *                value代表解析：BOOL的为0或1， ERROR的为内容值，FORMULA的为内容值，INLINESTR的为索引值需转换为内容值，
-     *                SSTINDEX的为索引值需转换为内容值， NUMBER为内容值，DATE为内容值
+     * @param value 单元格的值，
+     *              value代表解析：BOOL的为0或1， ERROR的为内容值，FORMULA的为内容值，INLINESTR的为索引值需转换为内容值，
+     *              SSTINDEX的为索引值需转换为内容值， NUMBER为内容值，DATE为内容值
      * @return
      */
     @SuppressWarnings("deprecation")

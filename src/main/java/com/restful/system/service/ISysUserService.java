@@ -14,6 +14,7 @@ public interface ISysUserService extends IService<SysUser> {
 
     /**
      * 方法描述: 根据用户名查询用户信息
+     *
      * @param name 用户名
      * @return com.restful.system.model.SysUser
      * @author LiShuLin

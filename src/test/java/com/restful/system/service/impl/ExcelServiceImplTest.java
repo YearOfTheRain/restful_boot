@@ -33,9 +33,9 @@ public class ExcelServiceImplTest {
         try {
             in = new FileInputStream(file);
             List<ExcelHead> excelHeads = new ArrayList<ExcelHead>();
-            String[] entityName = {"orderId","onlineOrderId","shopId","shopName","buyerName","orderTime","buyTime","sendTime","shouldPay","hasPay","discountPay","fare","status","shopStatus","errorType","courierCompany","trackingNumber","consigneeName","province","city","district","street","address","mobilePhone","fixedTelephone","orderType","buyerMessage","orderRemark","sendStorehouse","tag","payNumber","platform","childOrderNumber","originalOnlineOrder","styleNumber","produceNumber","produceName","colorAndFormat","amount","producePrice","produceMoney","gift","childOrderStatus","costPrice","resendAmount","resendAmountReal","resendMoney"};
-            String[] excelName= {"订单号",    "线上订单号" , "店铺编号","店铺"  ,"买家账号" ,"下单时间" ,"付款日期","发货日期","应付金额","已付金额","抵扣金额" ,"运费","状态"  ,"店铺状态"  ,"异常类型" ,"快递公司"      ,"快递单号"      ,"收货人姓名"   ,"省份"    ,"城市","区县"    ,"街道"  ,"地址"   ,"手机"       ,"固话"          ,"订单类型","买家留言" ,"订单备注"   ,"发货仓"        ,"标签","支付单号","平台站点","子订单编号"      ,"原始线上订单号"     ,"款号"       ,"商品编码"     ,"商品名称"   ,"颜色及规格"    ,"数量"  ,"商品单价"    ,"商品金额"    ,"是否赠品","子订单状态"  ,"成本价"   ,"申请退货数量","实退数量","订单退款金额"};
-            for (int i = 0; i< excelName.length; i++) {
+            String[] entityName = {"orderId", "onlineOrderId", "shopId", "shopName", "buyerName", "orderTime", "buyTime", "sendTime", "shouldPay", "hasPay", "discountPay", "fare", "status", "shopStatus", "errorType", "courierCompany", "trackingNumber", "consigneeName", "province", "city", "district", "street", "address", "mobilePhone", "fixedTelephone", "orderType", "buyerMessage", "orderRemark", "sendStorehouse", "tag", "payNumber", "platform", "childOrderNumber", "originalOnlineOrder", "styleNumber", "produceNumber", "produceName", "colorAndFormat", "amount", "producePrice", "produceMoney", "gift", "childOrderStatus", "costPrice", "resendAmount", "resendAmountReal", "resendMoney"};
+            String[] excelName = {"订单号", "线上订单号", "店铺编号", "店铺", "买家账号", "下单时间", "付款日期", "发货日期", "应付金额", "已付金额", "抵扣金额", "运费", "状态", "店铺状态", "异常类型", "快递公司", "快递单号", "收货人姓名", "省份", "城市", "区县", "街道", "地址", "手机", "固话", "订单类型", "买家留言", "订单备注", "发货仓", "标签", "支付单号", "平台站点", "子订单编号", "原始线上订单号", "款号", "商品编码", "商品名称", "颜色及规格", "数量", "商品单价", "商品金额", "是否赠品", "子订单状态", "成本价", "申请退货数量", "实退数量", "订单退款金额"};
+            for (int i = 0; i < excelName.length; i++) {
                 excelHeads.add(new ExcelHead(excelName[i], entityName[i]));
             }
             List<Excel> list = PoiUtils.readExcelToEntity(Excel.class, file, file.getName(), excelHeads);
@@ -51,10 +51,10 @@ public class ExcelServiceImplTest {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(in!=null) {
+            if (in != null) {
                 try {
                     in.close();
-                }catch(Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

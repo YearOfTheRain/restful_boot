@@ -137,6 +137,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 方法描述: 消息不可读异常
+     *
      * @return com.restful.common.core.ResponseEntity
      * @author LiShuLin
      * @date 2019/9/20
@@ -148,6 +149,7 @@ public class GlobalExceptionHandler {
                 RequestContextHolderUtil.getHttpServletRequest().getRequestURI(), e);
         return ResponseEntity.failure(ResultCode.PARAM_IS_BLANK, e.getMessage());
     }
+
     /**
      * 方法描述: 服务器错误，需要查找问题
      *
@@ -175,6 +177,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 方法描述: 提取、精炼错误信息，封装后返回前端
+     *
      * @param fieldErrorList 错误字段信息集合
      * @return java.util.List<com.restful.common.core.ParameterInvalidItem>
      * @author LiShuLin

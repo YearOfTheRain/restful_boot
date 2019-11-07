@@ -40,7 +40,7 @@ public enum ResultCode {
     RESULT_DATA_NONE(50001, "数据未找到"),
     DATA_IS_WRONG(50002, "数据有误"),
     DATA_ALREADY_EXISTED(50003, "数据已存在"),
-    SERVER_ERROR(50088,"服务器错误，请联系管理员"),
+    SERVER_ERROR(50088, "服务器错误，请联系管理员"),
 
     /*** 接口错误：60001-69999*/
     INTERFACE_INNER_INVOKE_ERROR(60001, "内部系统接口调用异常"),
@@ -92,6 +92,7 @@ public enum ResultCode {
 
     /**
      * 校验重复的code值
+     *
      * @param args String[]
      */
     public static void main(String[] args) {

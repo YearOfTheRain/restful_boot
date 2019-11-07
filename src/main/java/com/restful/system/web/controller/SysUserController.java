@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * @author LiShuLin
  * @version v1.0
@@ -33,11 +31,7 @@ public class SysUserController {
      */
     @GetMapping
     public ResponseEntity getAll() {
-        List<SysUser> list = sysUserService.list();
-        throw new RuntimeException("测试发送邮件.抛出空指针异常");
-//        return ResponseEntity.success(list);
-
-
+        return ResponseEntity.success(sysUserService.list());
     }
 
     /**

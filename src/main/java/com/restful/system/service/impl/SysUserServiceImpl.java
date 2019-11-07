@@ -49,7 +49,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @date 2019/9/26
      */
     @Override
-    public int saveUser(SysUser sysUser){
+    public int saveUser(SysUser sysUser) {
         sysUser.setCreateTime(new Date());
         sysUser.setPassword(EncryptionUtils.getEncryptionPassword(sysUser.getUserName(), sysUser.getPassword()));
         int result = baseMapper.insert(sysUser);

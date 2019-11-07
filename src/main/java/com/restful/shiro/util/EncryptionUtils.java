@@ -52,6 +52,6 @@ public class EncryptionUtils {
      * @date 2018年8月15日 上午11:46:23
      */
     public static void main(String[] args) {
-        System.out.println(getEncryptionPassword("lisi","123456"));
+        System.out.println(getEncryptionPassword("lisi", "123456"));
     }
 }

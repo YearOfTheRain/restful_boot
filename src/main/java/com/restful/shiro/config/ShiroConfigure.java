@@ -53,7 +53,7 @@ public class ShiroConfigure {
     }
 
     /**
-     *  自定义认证
+     * 自定义认证
      */
     @Bean
     public ShiroRealm shiroRealmCustomize() {
@@ -201,7 +201,6 @@ public class ShiroConfigure {
         filterProxy.setTargetBeanName("shiroFilterFactoryBean");
         return filterProxy;
     }
-
 
 
 }

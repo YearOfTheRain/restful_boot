@@ -24,6 +24,6 @@ public class ShiroUtils {
 
     public static SysUser getSysUser() {
         Object principal = getSubject().getPrincipal();
-        return principal != null ? (SysUser)principal : new SysUser() ;
+        return principal != null ? (SysUser) principal : new SysUser();
     }
 }

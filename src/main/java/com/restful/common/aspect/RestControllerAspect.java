@@ -148,7 +148,7 @@ public class RestControllerAspect {
                 }
             }
             // 无 data 参数 直接返回
-            if(!isJSONObject(jsonObject.get("data"))) {
+            if (!isJSONObject(jsonObject.get("data"))) {
                 return jsonObject.toJSONString();
             }
 

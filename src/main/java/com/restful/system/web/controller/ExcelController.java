@@ -1,9 +1,11 @@
 package com.restful.system.web.controller;
 
 import com.restful.common.core.ResponseEntity;
+import com.restful.common.thread.manage.AsyncManager;
 import com.restful.poi.model.Excel;
 import com.restful.poi.model.ExcelExport;
 import com.restful.poi.model.ExcelHead;
+import com.restful.poi.util.AsyncFactory;
 import com.restful.poi.util.PoiUtils;
 import com.restful.poinew.ExcelReaderUtil;
 import com.restful.system.service.IExcelService;
@@ -64,6 +66,7 @@ public class ExcelController implements Cloneable {
         long start = System.currentTimeMillis();
         try(InputStream inputStream = file.getInputStream()) {
             ExcelReaderUtil.readExcel(inputStream, (int sheetIndex, int totalRowCount, int curRow, List<String> cellList) -> {
+                AsyncManager.getInstance().setFixedThreadPool(AsyncFactory.saveDataString(cellList));
             });
         } catch (Exception e) {
             e.printStackTrace();

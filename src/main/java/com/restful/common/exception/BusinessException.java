@@ -41,7 +41,8 @@ public class BusinessException extends RuntimeException {
 
     /**
      * 方法描述: 根据传来的格式，格式化 message 信息
-     * @param format 展示格式
+     *
+     * @param format  展示格式
      * @param objects 展示的数据
      * @author LiShuLin
      * @date 2019/9/18

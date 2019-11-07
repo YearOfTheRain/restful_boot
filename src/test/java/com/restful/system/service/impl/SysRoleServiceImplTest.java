@@ -37,7 +37,7 @@ public class SysRoleServiceImplTest {
     @Before
     public void buildList() {
         sysRoleList = new ArrayList<>();
-        for (int index = 0; index < 5; index++){
+        for (int index = 0; index < 5; index++) {
             sysRoleList.add(buildSysRole());
         }
     }
@@ -51,6 +51,7 @@ public class SysRoleServiceImplTest {
             System.out.println(roleKey);
         });
     }
+
     @Test
     public void test1() {
         List<String> list = new ArrayList<>();

@@ -26,6 +26,7 @@ public class ResponseEntity implements Serializable {
 
     /**
      * 方法描述: 无参构造方法
+     *
      * @author LiShuLin
      * @date 2019/9/17
      */
@@ -34,8 +35,9 @@ public class ResponseEntity implements Serializable {
 
     /**
      * 方法描述: 带参构造方法
-     * @param code  Integer code
-     * @param msg String msg
+     *
+     * @param code Integer code
+     * @param msg  String msg
      * @author LiShuLin
      * @date 2019/9/17
      */
@@ -46,6 +48,7 @@ public class ResponseEntity implements Serializable {
 
     /**
      * 方法描述: 成功
+     *
      * @return com.restful.common.core.ResponseEntity
      * @author LiShuLin
      * @date 2019/9/17
@@ -58,6 +61,7 @@ public class ResponseEntity implements Serializable {
 
     /**
      * 方法描述: 带 data 的成功
+     *
      * @param data Object data
      * @return com.restful.common.core.ResponseEntity
      * @author LiShuLin
@@ -72,6 +76,7 @@ public class ResponseEntity implements Serializable {
 
     /**
      * 方法描述: 带错误码的失败
+     *
      * @param code 枚举类 ResultCode
      * @return com.restful.common.core.ResponseEntity
      * @author LiShuLin
@@ -85,6 +90,7 @@ public class ResponseEntity implements Serializable {
 
     /**
      * 方法描述: 带错误码和错误 data 的失败
+     *
      * @param code 枚举类 ResultCode
      * @param data Object data
      * @return com.restful.common.core.ResponseEntity
@@ -100,6 +106,7 @@ public class ResponseEntity implements Serializable {
 
     /**
      * 方法描述: 根据枚举类 ResultCode 设置 code 和 msg 的值
+     *
      * @param code 枚举类 ResultCode
      * @return void
      * @author LiShuLin

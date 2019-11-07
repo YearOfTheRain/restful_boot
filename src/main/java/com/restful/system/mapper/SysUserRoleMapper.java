@@ -17,14 +17,14 @@ import java.util.List;
 @Repository
 @Mapper
 public interface SysUserRoleMapper extends BaseMapper<SysUserRole> {
-    
-    /** 
-     * 方法描述: 批量新增 用户角色关联信息 
+
+    /**
+     * 方法描述: 批量新增 用户角色关联信息
      *
-     * @param userRoleList 用户角色 List 
-     * @return int 
+     * @param userRoleList 用户角色 List
+     * @return int
      * @author LiShuLin
-     * @date 2019/9/25 
+     * @date 2019/9/25
      */
     int batchUserRole(List<SysUserRole> userRoleList);
 

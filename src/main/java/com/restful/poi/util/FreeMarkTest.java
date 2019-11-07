@@ -32,7 +32,7 @@ public class FreeMarkTest {
             userMap.put("score", random.nextInt(4) + 1);
             dataList.add(userMap);
         }
-        dataMap.put("userList",dataList);
+        dataMap.put("userList", dataList);
         //获取服务根路径
         String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         Configuration configuration = new Configuration();
@@ -47,7 +47,7 @@ public class FreeMarkTest {
             template.process(dataMap, wirteur);
         } catch (TemplateException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             wirteur.flush();
             wirteur.close();
         }
@@ -59,7 +59,7 @@ public class FreeMarkTest {
             templateExcel.process(dataMap, wirteurExcel);
         } catch (TemplateException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             wirteurExcel.flush();
             wirteurExcel.close();
         }

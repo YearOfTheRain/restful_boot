@@ -38,6 +38,7 @@ public final class SpringUtils implements BeanFactoryPostProcessor {
 
     /**
      * 根据 bean 的类（class）获取该 bean 的实例
+     *
      * @param tClass bean 的类（class）
      * @throws BeansException BeansException
      */

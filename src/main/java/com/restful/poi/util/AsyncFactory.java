@@ -3,13 +3,15 @@ package com.restful.poi.util;
 import com.restful.common.spring.SpringUtils;
 import com.restful.poi.model.Excel;
 import com.restful.poi.model.ExcelHead;
+import com.restful.poinew.CastType;
 import com.restful.system.service.IExcelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TimerTask;
 
 /**
@@ -22,12 +24,11 @@ import java.util.TimerTask;
 @Slf4j
 public class AsyncFactory {
 
-
-    /** 
-     * 方法描述: 异步解析 excel 完成后记录 
+    /**
+     * 方法描述: 异步解析 excel 完成后记录
      *
-     * @param 
-     * @return java.util.TimerTask 
+     * @param
+     * @return java.util.TimerTask
      * @author LiShuLin
      * @date 2019/10/10
      */
@@ -91,12 +92,50 @@ public class AsyncFactory {
      * @date 2019/10/10
      */
     public static TimerTask saveData(List<Excel> list) {
-        List<Excel> excels = new ArrayList<>(list);
+        Set<Excel> excelSet = new HashSet<>(list);
         log.info("取得 " + list.size() + " 条数据");
+        log.info("取得 " + excelSet.size() + " 条不重复数据");
         return new TimerTask() {
             @Override
             public void run() {
-                excels.forEach(excel -> SpringUtils.getBean(IExcelService.class).saveOrUpdate(excel));
+                SpringUtils.getBean(IExcelService.class).saveOrUpdateBatch(excelSet);
+            }
+        };
+    }
+
+    /**
+     * 方法描述: 分段保存数据
+     *
+     * @param list 待保存的数据
+     * @return java.util.TimerTask
+     * @author LiShuLin
+     * @date 2019/10/10
+     */
+    public static TimerTask saveData(Set<Excel> list) {
+        Set<Excel> excelSet = new HashSet<>(list);
+        log.info("取得 " + excelSet.size() + " 条不重复数据");
+        return new TimerTask() {
+            @Override
+            public void run() {
+                SpringUtils.getBean(IExcelService.class).saveOrUpdateBatch(excelSet);
+            }
+        };
+    }
+
+    /**
+     * 方法描述: 分段保存数据
+     *
+     * @param list 待保存的数据
+     * @return java.util.TimerTask
+     * @author LiShuLin
+     * @date 2019/10/10
+     */
+    public static TimerTask saveDataString(List<String> list) {
+        Excel excel = CastType.string2Excel(list);
+        return new TimerTask() {
+            @Override
+            public void run() {
+                SpringUtils.getBean(IExcelService.class).saveOrUpdate(excel);
             }
         };
     }

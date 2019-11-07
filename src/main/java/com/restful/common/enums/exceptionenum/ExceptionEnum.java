@@ -48,6 +48,7 @@ public enum ExceptionEnum {
 
     /**
      * 方法描述: 根据 HttpStatus 获得对应返回信息
+     *
      * @param httpStatus HttpStatus
      * @return com.restful.common.enums.exceptionenum.ExceptionEnum
      * @author LiShuLin
@@ -64,6 +65,7 @@ public enum ExceptionEnum {
 
     /**
      * 方法描述: 根据异常类，获取对应的返回信息
+     *
      * @param eClass 异常
      * @return com.restful.common.enums.exceptionenum.ExceptionEnum
      * @author LiShuLin

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author LiShuLin
@@ -17,7 +18,6 @@ import java.util.Date;
 @Data
 @TableName("excel")
 public class Excel {
-
 
     @TableId(value = "order_id", type = IdType.INPUT)
     private String orderId;
@@ -67,4 +67,21 @@ public class Excel {
     private Integer resendAmount;
     private Integer resendAmountReal;
     private Double resendMoney;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Excel excel = (Excel) o;
+        return Objects.equals(orderId, excel.orderId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderId);
+    }
 }

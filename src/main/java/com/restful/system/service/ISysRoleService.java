@@ -16,7 +16,8 @@ public interface ISysRoleService extends IService<SysRole> {
 
     /**
      * 方法描述: 根据字段 role_key 查询角色
-     * @param roleKey  角色key
+     *
+     * @param roleKey 角色key
      * @return com.restful.system.model.SysRole
      * @author LiShuLin
      * @date 2019/9/25
