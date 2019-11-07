@@ -24,6 +24,7 @@ import java.util.Properties;
 @Slf4j
 public class MailUtils {
 
+
     /*** 收件人电子邮箱*/
     public static final String TO = "asdsadas@qq.com";
     /*** 发件人电子邮箱*/

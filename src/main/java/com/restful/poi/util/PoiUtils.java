@@ -36,6 +36,7 @@ import java.util.List;
 public class PoiUtils {
 
 
+
     private static final String SHORT_DATA_FORMAT = "yyyy/MM/dd";
 
     public static final String[] ENTITY_NAME = {"orderId", "onlineOrderId", "shopId", "shopName", "buyerName", "orderTime", "buyTime", "sendTime", "shouldPay", "hasPay", "discountPay", "fare", "status", "shopStatus", "errorType", "courierCompany", "trackingNumber", "consigneeName", "province", "city", "district", "street", "address", "mobilePhone", "fixedTelephone", "orderType", "buyerMessage", "orderRemark", "sendStorehouse", "tag", "payNumber", "platform", "childOrderNumber", "originalOnlineOrder", "styleNumber", "produceNumber", "produceName", "colorAndFormat", "amount", "producePrice", "produceMoney", "gift", "childOrderStatus", "costPrice", "resendAmount", "resendAmountReal", "resendMoney"};

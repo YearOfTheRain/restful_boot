@@ -16,6 +16,7 @@ public class AsyncManager {
 
     private ExecutorService fixedThreadPool = SpringUtils.getBean("fixedThreadPool");
 
+
     private AsyncManager() {
     }
 
