@@ -1,9 +1,9 @@
 package com.restful.poi.util;
 
 import com.restful.common.thread.manage.AsyncManager;
-import com.restful.poi.constant.ExcelConstansts;
 import com.restful.poi.model.Excel;
 import com.restful.poi.model.ExcelHead;
+import com.restful.poinew.ExcelReaderUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -19,8 +19,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -38,11 +38,25 @@ public class PoiUtils {
 
     private static final String SHORT_DATA_FORMAT = "yyyy/MM/dd";
 
-    public static final String[] ENTITY_NAME = {"orderId", "onlineOrderId", "shopId", "shopName", "buyerName", "orderTime", "buyTime", "sendTime", "shouldPay", "hasPay", "discountPay", "fare", "status", "shopStatus", "errorType", "courierCompany", "trackingNumber", "consigneeName", "province", "city", "district", "street", "address", "mobilePhone", "fixedTelephone", "orderType", "buyerMessage", "orderRemark", "sendStorehouse", "tag", "payNumber", "platform", "childOrderNumber", "originalOnlineOrder", "styleNumber", "produceNumber", "produceName", "colorAndFormat", "amount", "producePrice", "produceMoney", "gift", "childOrderStatus", "costPrice", "resendAmount", "resendAmountReal", "resendMoney"};
+    public static final String[] ENTITY_NAME = {"orderId", "onlineOrderId", "shopId", "shopName", "buyerName",
+            "orderTime", "buyTime", "sendTime", "shouldPay", "hasPay", "discountPay", "fare", "status", "shopStatus",
+            "errorType", "courierCompany", "trackingNumber", "consigneeName", "province", "city", "district", "street",
+            "address", "mobilePhone", "fixedTelephone", "orderType", "buyerMessage", "orderRemark", "sendStorehouse",
+            "tag", "payNumber", "platform", "childOrderNumber", "originalOnlineOrder", "styleNumber", "produceNumber",
+            "produceName", "colorAndFormat", "amount", "producePrice", "produceMoney", "gift", "childOrderStatus",
+            "costPrice", "resendAmount", "resendAmountReal", "resendMoney"};
 
-    public static final String[] EXCEL_NAME = {"订单号", "线上订单号", "店铺编号", "店铺", "买家账号", "下单时间", "付款日期", "发货日期", "应付金额", "已付金额", "抵扣金额", "运费", "状态", "店铺状态", "异常类型", "快递公司", "快递单号", "收货人姓名", "省份", "城市", "区县", "街道", "地址", "手机", "固话", "订单类型", "买家留言", "订单备注", "发货仓", "标签", "支付单号", "平台站点", "子订单编号", "原始线上订单号", "款号", "商品编码", "商品名称", "颜色及规格", "数量", "商品单价", "商品金额", "是否赠品", "子订单状态", "成本价", "申请退货数量", "实退数量", "订单退款金额"};
+    public static final String[] EXCEL_NAME = {"订单号", "线上订单号", "店铺编号", "店铺",
+            "买家账号", "下单时间", "付款日期", "发货日期", "应付金额", "已付金额",
+            "抵扣金额", "运费", "状态", "店铺状态", "异常类型", "快递公司",
+            "快递单号", "收货人姓名", "省份", "城市", "区县", "街道", "地址",
+            "手机", "固话", "订单类型", "买家留言", "订单备注", "发货仓",
+            "标签", "支付单号", "平台站点", "子订单编号", "原始线上订单号",
+            "款号", "商品编码", "商品名称", "颜色及规格", "数量", "商品单价",
+            "商品金额", "是否赠品", "子订单状态", "成本价", "申请退货数量", "实退数量", "订单退款金额"};
 
-    public static final int[] SIZE = {30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30};
+    public static final int[] SIZE = {30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
+            30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30};
 
     /*** 默认数字类的值*/
     public static final String DEFAULT_NUM_VALUE = "0";
@@ -145,111 +159,116 @@ public class PoiUtils {
     /**
      * 解析Excel
      *
-     * @param classzz    类
+     * @param clazz    类
      * @param workbook   工作簿对象
      * @param excelHeads excel与entity对应关系实体
      * @param <T>
      * @return
      * @throws Exception
      */
-    private static <T> List<T> readExcel(Class<T> classzz, Workbook workbook, List<ExcelHead> excelHeads) throws Exception {
-        List<T> beans = new ArrayList<>();
-        //读取工作表数量
-        int sheetNum = workbook.getNumberOfSheets();
-        int flag = 0;
+    private static <T> List<T> readExcel(Class<T> clazz, Workbook workbook, List<ExcelHead> excelHeads) throws Exception {
+        List<T> beans = new ArrayList<>(500 + 4);
         //循环中需要使用的变量 提前声明
         Row dataRow;
-        Cell headCell;
         T instance;
-        Cell cell;
-        String headName;
-        ExcelHead eHead = null;
-        String methodName;
-        Method method;
-        Field field;
-
-        for (int sheetIndex = 0; sheetIndex < sheetNum; sheetIndex++) {
+        for (int sheetIndex = 0, sheetNum = workbook.getNumberOfSheets(); sheetIndex < sheetNum; sheetIndex++) {
             //开始解析工作表
             Sheet sheet = workbook.getSheetAt(sheetIndex);
             if (sheet == null) {
                 continue;
             }
             int firstRowNum = sheet.getFirstRowNum();
-            int lastRowNum = sheet.getLastRowNum();
             Row head = sheet.getRow(firstRowNum);
             if (head == null) {
                 continue;
             }
+            int lastRowNum = sheet.getLastRowNum();
             short firstCellNum = head.getFirstCellNum();
             short lastCellNum = head.getLastCellNum();
-            Field[] fields = classzz.getDeclaredFields();
+            Field[] fields = clazz.getDeclaredFields();
 
             for (int rowIndex = firstRowNum + 1; rowIndex <= lastRowNum; rowIndex++) {
                 dataRow = sheet.getRow(rowIndex);
-                flag++;
                 if (dataRow == null || checkRowNull(dataRow)) {
                     continue;
                 }
-                instance = classzz.newInstance();
                 //非头部映射方式，默认不校验是否为空，提高效率
                 if (CollectionUtils.isEmpty(excelHeads)) {
                     firstCellNum = dataRow.getFirstCellNum();
                     lastCellNum = dataRow.getLastCellNum();
                 }
-                for (int cellIndex = firstCellNum; cellIndex < lastCellNum; cellIndex++) {
-                    headCell = head.getCell(cellIndex);
-                    if (headCell == null) {
-                        continue;
-                    }
-                    cell = dataRow.getCell(cellIndex);
-                    headCell.setCellType(Cell.CELL_TYPE_STRING);
-                    headName = headCell.getStringCellValue().trim();
-                    if (StringUtils.isEmpty(headName)) {
-                        continue;
-                    }
-                    if (!CollectionUtils.isEmpty(excelHeads)) {
-                        eHead = excelHeads.get(cellIndex);
-                        headName = eHead.getEntityName();
-                    }
-                    field = fields[cellIndex];
-                    if (headName.equalsIgnoreCase(field.getName())) {
-                        methodName = MethodUtils.setMethodName(field.getName());
-                        method = classzz.getMethod(methodName, field.getType());
-                        if (isDateField(field)) {
-                            Date date = null;
-                            if (cell != null && org.apache.commons.lang3.StringUtils.isNotBlank(cell.getStringCellValue())) {
-                                date = new Date(cell.getStringCellValue());
-                            }
-                            method.invoke(instance, date);
-                        } else {
-                            String value = null;
-                            if (cell != null) {
-                                cell.setCellType(Cell.CELL_TYPE_STRING);
-                                value = cell.getStringCellValue();
-                            }
-                            if (StringUtils.isEmpty(value)) {
-                                value = "";
-                            }
-                            method.invoke(instance, convertType(field.getType().getName(), value.trim()));
-                        }
-                    }
-                }
+                instance = clazz.newInstance();
+                matchObjectField(clazz, excelHeads, dataRow, instance, head, firstCellNum, lastCellNum, fields);
                 beans.add(instance);
-                //当500次循环后 如果集合中有数据 就异步入库 并清空该集合
-                if (flag == 500 && beans.size() > 0) {
+                //如果集合中有数据并且数据大于 500 条，就异步入库并清空该集合
+                if (beans.size() > 500) {
                     AsyncManager.getInstance().setFixedThreadPool(AsyncFactory.saveData((List<Excel>) beans));
-                    flag = 0;
-                    beans.clear();
-                }
-                //当数据不足分批插入条时 进入该方法 如果集合中有数据 就异步入库 并清空该集合
-                if (rowIndex == lastRowNum && beans.size() > 0) {
-                    AsyncManager.getInstance().setFixedThreadPool(AsyncFactory.saveData((List<Excel>) beans));
-                    flag = 0;
                     beans.clear();
                 }
             }
+            //不满足数据大于 500 条，但是也是有数据的。异步执行入库并清空该集合
+            if (beans.size() > 0) {
+                AsyncManager.getInstance().setFixedThreadPool(AsyncFactory.saveData((List<Excel>) beans));
+                beans.clear();
+            }
         }
         return beans;
+    }
+
+    /**
+     * 匹配对象字段
+     */
+    private static <T> void matchObjectField(Class<T> clazz, List<ExcelHead> excelHeads, Row dataRow, T instance, Row head,
+                                             short firstCellNum, short lastCellNum, Field[] fields)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Cell headCell;
+        String headName;
+        Cell cell;
+        ExcelHead eHead;
+        for (int cellIndex = firstCellNum; cellIndex < lastCellNum; cellIndex++) {
+            headCell = head.getCell(cellIndex);
+            if (headCell == null) {
+                continue;
+            }
+            headCell.setCellType(Cell.CELL_TYPE_STRING);
+            headName = headCell.getStringCellValue().trim();
+            if (StringUtils.isEmpty(headName)) {
+                continue;
+            }
+            cell = dataRow.getCell(cellIndex);
+            if (!CollectionUtils.isEmpty(excelHeads)) {
+                eHead = excelHeads.get(cellIndex);
+                headName = eHead.getEntityName();
+            }
+            reflectionObjectMethod(clazz, instance, cell, headName, fields[cellIndex]);
+        }
+    }
+
+    /**
+     *  反射调用对象方法，给对象赋值
+     */
+    private static <T> void reflectionObjectMethod(Class<T> tClass, T instance, Cell cell, String headName, Field field)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        //不匹配则直接 return
+        if (!headName.equalsIgnoreCase(field.getName())){
+            return;
+        }
+        String methodName = MethodUtils.setMethodName(field.getName());
+        Method method = tClass.getMethod(methodName, field.getType());
+        if (isDateField(field)) {
+            Date date = null;
+            if (cell != null && org.apache.commons.lang3.StringUtils.isNotBlank(cell.getStringCellValue())) {
+                date = new Date(cell.getStringCellValue());
+            }
+            method.invoke(instance, date);
+        } else {
+            String value = "";
+            if (cell != null) {
+                cell.setCellType(Cell.CELL_TYPE_STRING);
+                value = cell.getStringCellValue();
+            }
+            method.invoke(instance, ExcelReaderUtil.convertType(field.getType().getName(), value.trim()));
+        }
     }
 
     /**
@@ -272,52 +291,6 @@ public class PoiUtils {
         if (excelHead != null && excelHead.isRequired()) {
             throw new Exception("《" + sheetName + "》第" + (rowIndex + 1) + "行:\"" + excelHead.getExcelName() + "\"不能为空！");
         }
-    }
-
-    /**
-     * 类型转换
-     *
-     * @param classType
-     * @param value
-     * @return
-     */
-    private static Object convertType(String classType, String value) {
-        //防止字符串为 null 时，转换数值类型发生空指针异常
-        if (org.apache.commons.lang3.StringUtils.isBlank(value)) {
-            value = DEFAULT_NUM_VALUE;
-        }
-        if (ExcelConstansts.INTEGER_TYPE.equals(classType)) {
-            return Integer.valueOf(value);
-        }
-        if (ExcelConstansts.SHORT_TYPE.equals(classType)) {
-            return Short.valueOf(value);
-        }
-        if (ExcelConstansts.BYTE_TYPE.equals(classType)) {
-            return Byte.valueOf(value);
-        }
-        if (ExcelConstansts.CHAR_TYPE.equals(classType)) {
-            return value.charAt(0);
-        }
-        if (ExcelConstansts.LONG_TYPE.equals(classType)) {
-            return Long.valueOf(value);
-        }
-        if (ExcelConstansts.FLOAT_TYPE.equals(classType)) {
-            return Float.valueOf(value);
-        }
-        if (ExcelConstansts.DOUBLE_TYPE.equals(classType)) {
-            return Double.valueOf(value);
-        }
-        if (ExcelConstansts.BOOLEAN_TYPE.equals(classType)) {
-            return Boolean.valueOf(value.toLowerCase());
-        }
-        if (ExcelConstansts.BIG_DECIMAL_TYPE.equals(classType)) {
-            return new BigDecimal(value);
-        }
-        //对 String 类进行还原 null 的操作
-        if (DEFAULT_NUM_VALUE.equals(value)) {
-            return null;
-        }
-        return value;
     }
 
     private static void accept(Excel excel) {
@@ -345,8 +318,17 @@ public class PoiUtils {
         try {
             in = new FileInputStream(file);
             List<ExcelHead> excelHeads = new ArrayList<>(50);
-            String[] entityName = {"orderId", "onlineOrderId", "shopId", "shopName", "buyerName", "orderTime", "buyTime", "sendTime", "shouldPay", "hasPay", "discountPay", "fare", "status", "shopStatus", "errorType", "courierCompany", "trackingNumber", "consigneeName", "province", "city", "district", "street", "address", "mobilePhone", "fixedTelephone", "orderType", "buyerMessage", "orderRemark", "sendStorehouse", "tag", "payNumber", "platform", "childOrderNumber", "originalOnlineOrder", "styleNumber", "produceNumber", "produceName", "colorAndFormat", "amount", "producePrice", "produceMoney", "gift", "childOrderStatus", "costPrice", "resendAmount", "resendAmountReal", "resendMoney"};
-            String[] excelName = {"订单号", "线上订单号", "店铺编号", "店铺", "买家账号", "下单时间", "付款日期", "发货日期", "应付金额", "已付金额", "抵扣金额", "运费", "状态", "店铺状态", "异常类型", "快递公司", "快递单号", "收货人姓名", "省份", "城市", "区县", "街道", "地址", "手机", "固话", "订单类型", "买家留言", "订单备注", "发货仓", "标签", "支付单号", "平台站点", "子订单编号", "原始线上订单号", "款号", "商品编码", "商品名称", "颜色及规格", "数量", "商品单价", "商品金额", "是否赠品", "子订单状态", "成本价", "申请退货数量", "实退数量", "订单退款金额"};
+            String[] entityName = {"orderId", "onlineOrderId", "shopId", "shopName", "buyerName", "orderTime", "buyTime", "sendTime",
+            "shouldPay", "hasPay", "discountPay", "fare", "status", "shopStatus", "errorType", "courierCompany", "trackingNumber",
+             "consigneeName", "province", "city", "district", "street", "address", "mobilePhone", "fixedTelephone", "orderType",
+             "buyerMessage", "orderRemark", "sendStorehouse", "tag", "payNumber", "platform", "childOrderNumber", "originalOnlineOrder",
+             "styleNumber", "produceNumber", "produceName", "colorAndFormat", "amount", "producePrice", "produceMoney", "gift",
+             "childOrderStatus", "costPrice", "resendAmount", "resendAmountReal", "resendMoney"};
+            String[] excelName = {"订单号", "线上订单号", "店铺编号", "店铺", "买家账号", "下单时间", "付款日期", "发货日期", "应付金额",
+            "已付金额", "抵扣金额", "运费", "状态", "店铺状态", "异常类型", "快递公司", "快递单号", "收货人姓名", "省份", "城市", "区县",
+            "街道", "地址", "手机", "固话", "订单类型", "买家留言", "订单备注", "发货仓", "标签", "支付单号", "平台站点", "子订单编号",
+            "原始线上订单号", "款号", "商品编码", "商品名称", "颜色及规格", "数量", "商品单价", "商品金额", "是否赠品", "子订单状态",
+             "成本价", "申请退货数量", "实退数量", "订单退款金额"};
             for (int i = 0; i < excelName.length; i++) {
                 excelHeads.add(new ExcelHead(excelName[i], entityName[i]));
             }

@@ -4,8 +4,6 @@ import com.restful.common.spring.SpringUtils;
 
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author LiShuLin
@@ -24,7 +22,7 @@ public class AsyncManager {
     /**
      * 异步操作任务调度线程池
      */
-    private ScheduledExecutorService executor = SpringUtils.getBean("scheduledExecutorService");
+//    private ScheduledExecutorService executor = SpringUtils.getBean("scheduledExecutorService");
 
     private ExecutorService fixedThreadPool = SpringUtils.getBean("fixedThreadPool");
 
@@ -54,18 +52,12 @@ public class AsyncManager {
      * @author LiShuLin
      * @date 2019/10/10
      */
-    public void execute(TimerTask timerTask) {
-        //延迟 10 毫秒执行该任务
-        try {
-            executor.schedule(timerTask, OPERATE_DELAY_TIME, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            e.printStackTrace();
-            executor.shutdown();
-        }
-    }
+//    public void execute(TimerTask timerTask) {
+//        //延迟 10 毫秒执行该任务
+//        executor.schedule(timerTask, OPERATE_DELAY_TIME, TimeUnit.MILLISECONDS);
+//    }
 
     public void setFixedThreadPool(TimerTask timerTask) {
         fixedThreadPool.execute(timerTask);
-        fixedThreadPool.shutdown();
     }
 }
