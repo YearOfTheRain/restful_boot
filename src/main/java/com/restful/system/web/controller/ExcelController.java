@@ -1,13 +1,13 @@
 package com.restful.system.web.controller;
 
 import com.restful.common.core.ResponseEntity;
+import com.restful.common.thread.Threads;
 import com.restful.common.thread.manage.AsyncManager;
 import com.restful.poi.model.Excel;
 import com.restful.poi.model.ExcelExport;
 import com.restful.poi.model.ExcelHead;
 import com.restful.poi.util.AsyncFactory;
 import com.restful.poi.util.PoiUtils;
-import com.restful.poinew.ExcelReaderUtil;
 import com.restful.system.service.IExcelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,35 +46,11 @@ public class ExcelController implements Cloneable {
             excelHeads.add(new ExcelHead(excelName[i], entityName[i]));
         }
         //异步执行解析并入库
-//        AsyncManager.getInstance().execute(AsyncFactory.resolveExcel(file, excelHeads));
-        log.info("开始解析excel文件 ：" + file.getOriginalFilename());
-        long start = System.currentTimeMillis();
-        try (InputStream in = file.getInputStream()) {
-            PoiUtils.readExcelToEntity(Excel.class, in, file.getOriginalFilename(), excelHeads);
-        } catch (Exception e) {
-            log.error("转 InputStream 失败，{}", e.getMessage());
-            e.printStackTrace();
-        }
-        long time = System.currentTimeMillis() - start;
-        return ResponseEntity.success("花费 " + time + " 毫秒来解析excel");
+        AsyncManager.getInstance().execute(AsyncFactory.resolveExcel(file, excelHeads));
+        //等待 5 秒，防止用户过快操作
+        Threads.sleep(5000);
+        return ResponseEntity.success();
     }
-    @PostMapping("/importNew")
-    public ResponseEntity excelImportNew(@RequestParam MultipartFile file){
-
-        log.info("size: {}K", (file.getSize() / 1024));
-        long start = System.currentTimeMillis();
-        try(InputStream inputStream = file.getInputStream()) {
-            ExcelReaderUtil.readExcel(inputStream, (int sheetIndex, int totalRowCount, int curRow, List<String> cellList) -> {
-                AsyncManager.getInstance().setFixedThreadPool(AsyncFactory.saveDataString(cellList));
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return ResponseEntity.success("花费 " + (System.currentTimeMillis() - start) + " 毫秒来解析excel");
-    }
-
-
 
     @GetMapping("/export")
     public void export(HttpServletResponse response) {

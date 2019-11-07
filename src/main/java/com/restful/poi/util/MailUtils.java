@@ -70,7 +70,7 @@ public class MailUtils {
      * @author LiShuLin
      * @date 2019/10/31
      */
-    public static void buildMessage(Mail mail) {
+    public static boolean buildMessage(Mail mail) {
         // 创建默认的 MimeMessage 对象
         MimeMessage message = new MimeMessage(getSession());
         try {
@@ -81,13 +81,19 @@ public class MailUtils {
             // Set Subject: 主题文字
             message.setSubject(mail.getSubject());
             // Set Content: 消息内容
-            message.setContent(textAndFileMessages(mail));
+            message.setContent(createTextAndFileMessages(mail));
             Transport.send(message);
-        } catch (MessagingException|UnsupportedEncodingException e) {
+        } catch (MessagingException e) {
             log.info("build MimeMessage fail and the reason is : ", e);
             e.printStackTrace();
+            return false;
+        } catch (UnsupportedEncodingException e) {
+            log.info("fileName url encode error and the reason is :", e);
+            e.printStackTrace();
+            return false;
         }
         log.info("Sent message successfully...");
+        return true;
     }
 
     /**
@@ -96,11 +102,11 @@ public class MailUtils {
      * @throws MessagingException MessagingException
      * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
-    private static Multipart textAndFileMessages(Mail mail) throws MessagingException, UnsupportedEncodingException {
+    private static Multipart createTextAndFileMessages(Mail mail) throws MessagingException, UnsupportedEncodingException {
         Multipart multipart = new MimeMultipart();
-        multipart.addBodyPart(text(mail.getText()));
+        multipart.addBodyPart(setText(mail.getText()));
         if (!StringUtils.isEmpty(mail.getFileName())) {
-            multipart.addBodyPart(file(mail.getFileName()));
+            multipart.addBodyPart(setFile(mail.getFileName()));
         }
         return multipart;
     }
@@ -110,7 +116,7 @@ public class MailUtils {
      * @param text 文本
      * @throws MessagingException MessagingException
      */
-    private static BodyPart text(String text) throws MessagingException {
+    private static BodyPart setText(String text) throws MessagingException {
         BodyPart textBodyPart = new MimeBodyPart();
         textBodyPart.setText(text);
         return textBodyPart;
@@ -122,7 +128,7 @@ public class MailUtils {
      * @throws MessagingException MessagingException
      * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
-    private static BodyPart file(String fileName) throws MessagingException, UnsupportedEncodingException {
+    private static BodyPart setFile(String fileName) throws MessagingException, UnsupportedEncodingException {
         // 附件部分
         BodyPart fileBodyPart = new MimeBodyPart();
         //设置要发送附件的文件路径
