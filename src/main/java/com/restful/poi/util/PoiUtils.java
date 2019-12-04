@@ -6,6 +6,7 @@ import com.restful.poi.model.ExcelHead;
 import com.restful.poinew.ExcelReaderUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -134,9 +135,9 @@ public class PoiUtils {
      * @return
      * @throws IOException
      */
-    private static Workbook getWorkBoot(InputStream in, String fileName) throws IOException {
+    private static Workbook getWorkBoot(InputStream in, String fileName) throws IOException, InvalidFormatException {
         if (fileName.endsWith(".xlsx")) {
-            return new XSSFWorkbook(in);
+            return new XSSFWorkbook(OPCPackage.open(in));
         } else {
             return new HSSFWorkbook(in);
         }

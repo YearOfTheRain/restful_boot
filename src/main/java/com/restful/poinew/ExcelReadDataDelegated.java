@@ -21,5 +21,5 @@ public interface ExcelReadDataDelegated {
      * @param curRow        行号
      * @param cellList      行数据
      */
-    void readExcelDate(int sheetIndex, int totalRowCount, int curRow, List<String> cellLits);
+    void readExcelDate(int sheetIndex, int totalRowCount, int curRow, List<String> cellList);
 }

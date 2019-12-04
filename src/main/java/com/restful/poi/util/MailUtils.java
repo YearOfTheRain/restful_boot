@@ -1,13 +1,16 @@
 package com.restful.poi.util;
 
+import com.restful.common.configbean.MailBean;
 import com.restful.poi.model.Mail;
 import com.sun.mail.util.MailSSLSocketFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.annotation.PostConstruct;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.UnsupportedEncodingException;
@@ -24,12 +27,19 @@ import java.util.Properties;
 @Slf4j
 public class MailUtils {
 
-    /*** 收件人电子邮箱*/
-    public static final String TO = "asdsadas@qq.com";
-    /*** 发件人电子邮箱*/
-    public static final String FROM = "ysadsadsa@qq.com";
-    /*** 指定发送邮件的主机为 smtp.qq.com QQ 邮件服务器*/
-    private static final String HOST = "smtp.qq.com";
+    @Autowired
+    private MailBean mailBean;
+
+    /**
+     * 获取静态 bean
+     */
+    private static MailBean mailBeanStatic;
+
+    @PostConstruct
+    public void init() {
+        mailBeanStatic = mailBean;
+    }
+
     /*** 获取配置*/
     private static Properties properties;
     static {
@@ -37,7 +47,7 @@ public class MailUtils {
         properties = System.getProperties();
 
         // 设置邮件服务器
-        properties.setProperty("mail.smtp.host", HOST);
+        properties.setProperty("mail.smtp.host", mailBeanStatic.getHost());
 
         properties.put("mail.smtp.auth", "true");
         MailSSLSocketFactory sf;
@@ -57,7 +67,7 @@ public class MailUtils {
             @Override
             public PasswordAuthentication getPasswordAuthentication()
             {     //qq邮箱服务器账户、第三方登录授权码
-                return new PasswordAuthentication(FROM, "12312312"); //发件人邮件用户名、密码
+                return new PasswordAuthentication(mailBeanStatic.getForm(), mailBeanStatic.getPassword()); //发件人邮件用户名、密码
             }
         });
     }
@@ -75,7 +85,7 @@ public class MailUtils {
         MimeMessage message = new MimeMessage(getSession());
         try {
             // Set From: 头部头字段
-            message.setFrom(new InternetAddress(FROM));
+            message.setFrom(new InternetAddress(mailBeanStatic.getForm()));
             // Set To: 头部头字段
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(mail.getTo()));
             // Set Subject: 主题文字

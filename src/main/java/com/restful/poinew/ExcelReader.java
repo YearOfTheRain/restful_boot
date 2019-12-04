@@ -123,8 +123,12 @@ public class ExcelReader extends DefaultHandler {
     private Field[] fields = Excel.class.getDeclaredFields();
 
     private Excel excel = null;
-
-    private Set<Excel> excelSet = new HashSet<>(1024);
+    /*** 装不重复 excel 对象*/
+    private Set<Excel> excelSet = new HashSet<>(2048);
+    /*** 装 orderId 的 Set 集合*/
+    private Set<String> orderIdSet = new HashSet<>(2048);
+    /*** 批量执行条数*/
+    public static int BATCH_NUMBER = 1000;
 
     private int processCore(OPCPackage pkg) throws Exception {
         XSSFReader xssfReader = new XSSFReader(pkg);
@@ -266,6 +270,9 @@ public class ExcelReader extends DefaultHandler {
                     curCol++;
                 }
             }
+            if (curCol == 0) {
+                orderIdSet.add(value);
+            }
             CastType.methodInvoke(value, excel, fields[curCol]);
             curCol++;
             //如果里面某个单元格含有值，则标识该行不为空行
@@ -292,9 +299,10 @@ public class ExcelReader extends DefaultHandler {
                     // 调用excel读数据委托类进行读取插入操作
                     /*excelReadDataDelegated.readExcelDate(sheetIndex, totalRowCount, curRow, cellList);*/
                     excelSet.add(excel);
-                    if (excelSet.size() > 500) {
-                        AsyncManager.getInstance().setFixedThreadPool(AsyncFactory.saveData(excelSet));
+                    if (excelSet.size() > BATCH_NUMBER - 1) {
+                        AsyncManager.getInstance().setFixedThreadPool(AsyncFactory.saveData(excelSet,orderIdSet));
                         excelSet.clear();
+                        orderIdSet.clear();
                     }
                     totalRows++;
                 }
@@ -306,8 +314,9 @@ public class ExcelReader extends DefaultHandler {
                 excel = null;
                 flag = false;
                 if (totalRows == totalRowCount && !(excelSet.isEmpty())) {
-                    AsyncManager.getInstance().setFixedThreadPool(AsyncFactory.saveData(excelSet));
+                    AsyncManager.getInstance().setFixedThreadPool(AsyncFactory.saveData(excelSet,orderIdSet));
                     excelSet.clear();
+                    orderIdSet.clear();
                 }
             }
         }
@@ -353,7 +362,7 @@ public class ExcelReader extends DefaultHandler {
             formatString = style.getDataFormatString();
             if (formatString.contains("m/d/yy") || formatString.contains("yyyy/mm/dd") || formatString.contains("yyyy/m/d")) {
                 nextDataType = CellDataType.DATE;
-                formatString = "yyyy-MM-dd hh:mm:ss";
+                formatString = "yyyy/MM/dd hh:mm:ss";
             }
 
             if (formatString == null) {
@@ -371,7 +380,6 @@ public class ExcelReader extends DefaultHandler {
      *              SSTINDEX的为索引值需转换为内容值， NUMBER为内容值，DATE为内容值
      * @return
      */
-    @SuppressWarnings("deprecation")
     public String getDataValue(String value) {
         String thisStr;
         switch (nextDataType) {

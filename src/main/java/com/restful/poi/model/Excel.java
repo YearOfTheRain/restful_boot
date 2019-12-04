@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 @Data
 @TableName("excel")
-public class Excel {
+public class Excel implements Comparable<Excel> {
 
     @TableId(value = "order_id", type = IdType.INPUT)
     private String orderId;
@@ -83,5 +83,10 @@ public class Excel {
     @Override
     public int hashCode() {
         return Objects.hash(orderId);
+    }
+
+    @Override
+    public int compareTo(Excel excel) {
+        return Integer.parseInt(this.getOrderId()) - Integer.parseInt(excel.getOrderId());
     }
 }
