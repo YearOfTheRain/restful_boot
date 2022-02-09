@@ -19,7 +19,7 @@
         <mybatis-plus.version>3.2.0</mybatis-plus.version>
         <fast-json.version>1.2.58</fast-json.version>
         <spring.version>5.1.6.RELEASE</spring.version>
-        <shiro.version>1.4.1</shiro.version>
+        <shiro.version>1.7.1</shiro.version>
         <!--4.1.0 3.15-->
         <poi.version>3.17</poi.version>
         <xerces.version>2.11.0</xerces.version>
